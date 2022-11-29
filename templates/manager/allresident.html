@@ -1,0 +1,259 @@
+{% extends "manager/mheader.html" %}
+
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "managers:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">所有业主</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">所有业主
+                <button id="addpagebutton"  onclick="showaddpage()" class="btn btn-primary">添加</button>
+            </h1>
+        </div>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="allpage" class="col-md-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>业主户号</th>
+                                    <th>业主名</th>
+                                    <th>业主密码</th>
+                                    <th>性别</th>
+                                    <th>业主地址</th>
+                                    <th>业主电话</th>
+                                    <th>业主微信</th>
+                                    <th>业主Q Q</th>
+                                    <th>业主生日</th>
+                                    <th>业主介绍</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for res in resident %}
+                                <tr>
+                                    <td>
+                                        <label>
+                                            <input id="num{{ res.rnum }}" name="num{{ res.rnum }}" value="{{ res.rnum }}" style="width: 80px" >
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input id="name{{ res.rnum }}" name="name{{ res.rnum }}" value="{{ res.rname }}" style="width: 80px" >
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input id="password{{ res.rnum }}" name="password{{ res.rnum }}" value="{{ res.rpassword }}" style="width: 80px" >
+                                        </label>
+                                    </td>
+                                    <td>{{ res.get_rgender_display }}</td>
+                                    <td>
+                                        <label>
+                                            <input id="address{{ res.rnum }}" name="address{{ res.rnum }}" value="{{ res.raddress }}" style="width: 100px" >
+                                        </label>
+                                    </td>
+                                    <td>{{ res.rtelnum }}</td>
+                                    <td>{{ res.rwechat }}</td>
+                                    <td>{{ res.rqq }}</td>
+                                    <td><p style="width: 100px">{{ res.rbirth }}</p></td>
+                                    <td>
+                                        <label>
+                                            <textarea id="contend{{ res.rnum }}" name="contend{{ res.rnum }}" style="width: 150px;height: 50px" >{{ res.rcontend }}</textarea>
+                                        </label>
+                                    </td>
+                                    <td><a href="javascript:void(0)" onclick="changeFunc({{ res.rnum }})">修改</a>/<a href="javascript:void(0)" onclick="deleteFunc({{ res.rnum }})">删除</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="addpage" style="display: none" class="col-md-12 col-sm-offset-4">
+                        <div class="form-group">
+                            <label>户号</label>
+                            <br/>
+                            <label>
+                                <input type="text" style="width: 300px; border:1px solid black;" id="anum" class="form-control" placeholder="户号">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>姓名</label>
+                            <br/>
+                            <label>
+                                <input  type="text" style="width: 300px; border:1px solid black;" id="aname" class="form-control" placeholder="姓名">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <br/>
+                            <label>
+                                <input id="apassword" style="width: 300px; border:1px solid black;" type="text" class="form-control" placeholder="密码">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>地址</label>
+                            <br/>
+                            <label>
+                                <input id="aaddress" type="text" style="width: 300px; border:1px solid black;" class="form-control" placeholder="地址">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>介绍</label>
+                            <br/>
+                            <label>
+                                <textarea id="acontend" style="width: 300px;height: 100px; border:1px solid black;" class="form-control" placeholder="介绍"></textarea>
+                            </label>
+                        </div>
+                        <button id="addresbutton" onclick="addres()" class="btn btn-primary">添加</button>
+                        <button id="addresbutton" onclick="retallpage()" class="btn btn-primary">返回</button>
+                    </div>
+                </div>
+            </div><!-- /.col-->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function changeFunc(num) {
+        const numr = document.getElementById("num"+num);
+        const name = document.getElementById("name"+num);
+        const password = document.getElementById("password"+num);
+        const address = document.getElementById("address"+num);
+        const contend = document.getElementById("contend"+num);
+        console.log(num);
+        console.log(password.value);
+        if(numr.value === "")
+        {
+            confirm("户号为必填");
+            numr.focus();
+        }
+        else if(password.value === "")
+        {
+            confirm("密码为必填");
+            password.focus();
+        }
+        else if(address.value === "")
+        {
+            confirm("地址为必填");
+            address.focus();
+        }
+        else
+        {
+            if(confirm("确认修改？"))
+            {
+                $.ajax({
+                    url: '{% url "managers:changeRe" %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    async:true,
+                    data:{
+                        'num':num,
+                        'numc':numr.value,
+                        'name':name.value,
+                        'password':password.value,
+                        'address':address.value,
+                        'contend':contend.value
+                    },
+                }).done(function(dat) {
+                    alert(dat.result);
+                    window.location.href = "{% url "managers:allresident" %}";
+                })
+                .fail(function() {
+                    alert('修改失败！');
+                });
+            }
+        }
+    }
+    function deleteFunc(num) {
+        if(confirm("确认删除！"))
+        {
+            $.ajax({
+                url: '{% url "managers:deleteRe" %}',
+                type: 'POST',
+                dataType: 'json',
+                async:true,
+                data:{
+                    'num':num,
+                },
+            }).done(function(dat) {
+                alert(dat.result);
+                window.location.href = "{% url "managers:allresident" %}";
+            })
+            .fail(function() {
+                alert('删除失败！');
+            });
+        }
+
+    }
+    function showaddpage() {
+        const d1 = document.getElementById("allpage");
+        const d2 = document.getElementById("addpage");
+        d1.style.display = "none";
+        d2.style.display = "";
+    }
+    function addres() {
+        const num = document.getElementById("anum");
+        const name = document.getElementById("aname");
+        const password = document.getElementById("apassword");
+        const address = document.getElementById("aaddress");
+        const contend = document.getElementById("acontend");
+        if(num.value === "")
+        {
+            confirm("户号为必填");
+            num.focus();
+        }
+        else if(password.value === "")
+        {
+            confirm("密码为必填");
+            password.focus();
+        }
+        else if(address.value === "")
+        {
+            confirm("地址为必填");
+            address.focus();
+        }
+        else
+        {
+            if(confirm("确认添加？"))
+            {
+                $.ajax({
+                    url: '{% url "managers:addRe" %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    async : true,
+                    data:{
+                        'num':num.value,
+                        'name':name.value,
+                        'password':password.value,
+                        'address':address.value,
+                        'contend':contend.value
+                    },
+                }).done(function(dat) {
+                    alert(dat.result);
+                    window.location.href = "{% url "managers:allresident" %}";
+                })
+                .fail(function() {
+                    alert('增加失败！');
+                });
+            }
+
+        }
+    }
+    function retallpage() {
+        const d1 = document.getElementById("allpage");
+        const d2 = document.getElementById("addpage");
+        d1.style.display = "";
+        d2.style.display = "none";
+    }
+</script>
+
+{% endblock %}

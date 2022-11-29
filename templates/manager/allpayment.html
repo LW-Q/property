@@ -1,0 +1,107 @@
+{% extends "manager/mheader.html" %}
+
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "managers:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">所有缴费</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">所有缴费</h1>
+        </div>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-8 col-sm-offset-2">
+                        <p>日期格式：xxxx年xx月xx日</p>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>缴纳人编号</th>
+                                    <th>缴纳人姓名</th>
+                                    <th>类型</th>
+                                    <th>金额</th>
+                                    <th>截至日期</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for pay in payment %}
+                                <input id="num" type="hidden" value="{{ pay.id }}"/>
+                                <tr>
+                                    <td>{{ pay.paypeople_id }}</td>
+                                    <td>{{ pay.paypeople.rname }}</td>
+                                    <td>
+                                        <input type="hidden" value="{{ pay.paytype }}"/>
+                                        {{ pay.get_paytype_display }}
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input id="paysum" value="{{ pay.paysum }}" style="width: 60px"/>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input id="paydate" value="{{ pay.paydate }}" style="width: 150px"/>
+                                        </label>
+                                    </td>
+                                    <td><a href="javascript:void(0)" onclick="changeFunc({{ pay.paytype }})">修改</a></td>
+
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div><!-- /.col-->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function changeFunc(typ) {
+        const num = document.getElementById("num");
+        const sum = document.getElementById("paysum");
+        const date = document.getElementById("paydate");
+        let a = /^(\d{4})年(\d{2})月(\d{2})日$/;
+        if(!a.test(date.value))
+        {
+            confirm("日期格式出错！");
+        }
+        else if(date.value === "")
+        {
+            date.value = "2099年12月31日";
+        }
+        else if(confirm("确认修改？"))
+        {
+            $.ajax({
+                url: '{% url "managers:changePay" %}',
+                type: 'POST',
+                dataType: 'json',
+                async : true,
+                data:{
+                    'num':num.value,
+                    'sum':sum.value,
+                    'date':date.value,
+                    'type':typ
+                },
+            }).done(function(dat) {
+                alert(dat.result);
+                window.location.href = "{% url "managers:allpayment" %}";
+            })
+            .fail(function() {
+                alert('修改失败！');
+            });
+        }
+    }
+</script>
+
+{% endblock %}

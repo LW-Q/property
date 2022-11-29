@@ -1,0 +1,131 @@
+{% extends "resident/rheader.html" %}
+{% load static %}
+{% block js %}
+    <script type="text/javascript" src={% static "index/js/tipPage.js" %}></script>
+{% endblock %}
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "resident:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">报修</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">报修需求</h1>
+        </div>
+    </div><!--/.row-->
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-2">
+                        <div class="servicelist">
+                            <!--fix start-->
+                            <h2 class="servicetit servicetit7">维修服务</h2>
+                            <div class="inforlist" id="fix_panel">
+                                <a href="javascript:void(0)" onclick="showTips(0)">
+                                    <dl class="infor" data-val="35">
+                                        <dt><img src="{% static "serviceImg/wxfw_gdst_6e7389d.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>管道疏通</h3>
+                                            <p>快速疏通，轻松快捷</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(1)">
+                                    <dl class="infor" data-val="36">
+                                        <dt><img src="{% static "serviceImg/wsfw_ktjf_bdfd844.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>空调加氟</h3>
+                                            <p>专业加氟，使用放心</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(2)">
+                                    <dl class="infor" data-val="37">
+                                        <dt><img src="{% static "serviceImg/wxfw_ktwx_13950f8.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>空调维修</h3>
+                                            <p>专业技师，专注维修</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(3)">
+                                    <dl class="infor" data-val="38">
+                                        <dt><img src="{% static "serviceImg/hsc_05bc30f.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>换纱窗</h3>
+                                            <p>扼“纱”危险,”窗“造平安</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(4)">
+                                    <dl class="infor" data-val="39">
+                                        <dt><img src="{% static "serviceImg/hs_e09ae46.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>换锁</h3>
+                                            <p>精于探”锁“,贵在创“芯”</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(5)">
+                                    <dl class="infor" data-val="45">
+                                        <dt><img src="{% static "serviceImg/sltgh_hdd_e07045c.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>水龙头更换</h3>
+                                            <p>一步到位，闪电更换</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(6)">
+                                    <dl class="infor" data-val="46">
+                                        <dt><img src="{% static "serviceImg/djaz_hdd_fec2704.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>灯具安装</h3>
+                                            <p>安装有保障，安全又无忧</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(7)">
+                                    <dl class="infor" data-val="47">
+                                        <dt><img src="{% static "serviceImg/mtwx_hdd_c0c8b76.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>马桶维修</h3>
+                                            <p>专业安装，更换马桶</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                            </div>
+                            <div id="tip" class="tips" style="display: none">
+                                <br/>
+                                <h2 id="tipTitle"></h2>
+                                <button id="closeTip" onclick="closeTip()">关闭</button>
+                                <hr/>
+                                <h3 id="tipText"></h3>
+                                <p id="tipNum" style="display: none"></p>
+                                <button id="goto_demand" onclick="goto()">选择</button>
+                            </div>
+                            <!--fix end-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

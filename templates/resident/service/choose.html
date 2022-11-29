@@ -1,0 +1,85 @@
+{% extends "resident/rheader.html" %}
+
+{% comment %}
+    选择服务人员
+{% endcomment %}
+
+
+{% load static %}
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><span class="glyphicon glyphicon-home"></span></li>
+            <li class="active">选择服务人员</li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">{{ title }}</h1>
+        </div>
+    </div><!--标题-->
+    <div  class="bookstore_sort sort" id="peoplediv">
+        <div class="kind" style="font-size: 20px">
+            <div class="bz">排序方式：
+                <em class="icon">
+                    <div class="sort_form" style="display: inline">
+                        <a class="sort_select store" href="{% url "resident:choose" %}?tipTitle={{title}}&order=-wtaskmount">按接单总量</a>
+                    </div>
+                    <div class="sort_form" style="display: inline">
+                        <a class="sort_select store" href="{% url "resident:choose" %}?tipTitle={{title}}&order=whoursalary">按价格</a>
+                    </div>
+
+                    <div class="sort_form" style="display: inline">
+                        <a class="sort_select store" href="{% url "resident:choose" %}?tipTitle={{title}}&order=-is_online">在线</a>
+                    </div>
+                </em>
+            </div>
+        </div>
+        {% for wor in worker %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body" style="height: 50%">
+                        <div class="col-sm-5">
+                            <img src="{% static "index/image/worker.jpg" %}" alt="" style="margin-top: 20px;width: 50%;">
+                            <p>如果有需要请致电{{ wor.wtelnum }}</p>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: -10px;margin-left: -50px">
+                            <table class="table" style="margin-top: 30px;width: 100%">
+                                <tr>
+                                    <td><h3>姓名：{{ wor.wname }}</h3></td>
+                                </tr>
+                                <tr>
+                                    <td>主要业务：{{ wor.wskilled }}</td>
+                                </tr>
+                                <tr>
+                                    <td>时薪：{{ wor.whoursalary }}</td>
+                                </tr>
+                                <tr>
+                                    <td>完成任务总量：{{ wor.wtaskmount }}</td>
+                                </tr>
+                                <tr>
+                                    <td>联系方式：{{ wor.wtelnum }}</td>
+                                </tr>
+                                <tr><td></td></tr>
+                            </table>
+                        </div>
+                        <div class="col-sm-2" style="height: 100%;">
+                            <button class="btn btn-info" style="margin-left: 46%;margin-top: 46%" onclick="location.href='{% url "resident:payService" %}?wnum={{ wor.wnum }}'">选择</button>
+                            {% if wor.is_online is True %}
+                                <button class="btn btn-info" style="margin-left: 46%;margin-top: 46%" onclick="location.href='{% url "chat" %}?worker={{ wor.wnum }}'">联系</button>
+                            {% else %}
+                                <p>不在线,请电话联系</p>
+                            {% endif %}
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,293 @@
+{% extends 'resident/rheader.html' %}
+
+{% comment %}
+    业主首页
+    缴费状态
+    活动提示
+    新闻
+{% endcomment %}
+
+
+{% load static %}
+{% block js %}
+    <script type="text/javascript" src={% static "index/js/tipPage.js" %}></script>
+{% endblock %}
+{% block mainbody %}
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "resident:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">首页</li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">欢迎您回家</h1>
+            <h3>{% now "Y年 m月 j日" %}</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-3">
+            <div class="panel panel-blue panel-widget ">{#图标颜色#}
+                <a class="row no-padding" href="{% url "resident:pay" %}">
+                    <div class="col-sm-3 col-lg-5 widget-left">
+                        <em class="glyphicon glyphicon-tasks glyphicon-l"></em>
+                        {#图标#}
+                    </div>
+                    <div class="col-sm-9 col-lg-7 widget-right">
+                        <div class="large">水费</div>
+                        <div class="text-muted">
+                            {% if water.paysum == 0 %}
+                                已缴
+                            {% else %}
+                                <div style="color: red"> 剩余{{ water.paysum }}元未缴</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-3">
+            <div class="panel panel-orange panel-widget">
+                <a class="row no-padding" href="{% url "resident:pay" %}">
+                    <div class="col-sm-3 col-lg-5 widget-left">
+                        <em class="glyphicon glyphicon-tasks glyphicon-l"></em>
+                    </div>
+                    <div class="col-sm-9 col-lg-7 widget-right">
+                        <div class="large">电费</div>
+                        <div class="text-muted">
+                            {% if electricity.paysum == 0 %}
+                                已缴
+                            {% else %}
+                                <div style="color: red"> 剩余{{ electricity.paysum }}元未缴</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-3">
+            <div class="panel panel-teal panel-widget">
+                <a class="row no-padding" href="{% url "resident:pay" %}">
+                    <div class="col-sm-3 col-lg-5 widget-left">
+                        <em class="glyphicon glyphicon-tasks glyphicon-l"></em>
+                    </div>
+                    <div class="col-sm-9 col-lg-7 widget-right">
+                        <div class="large">物业费</div>
+                        <div class="text-muted">
+                            {% if propay.paysum == 0 %}
+                                已缴
+                            {% else %}
+                                <div style="color: red"> 剩余{{ propay.paysum }}元未缴</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-3">
+            <div class="panel panel-red panel-widget">
+                <a class="row no-padding" href="#">
+                    <div class="col-sm-3 col-lg-5 widget-left">
+                        <em class="glyphicon glyphicon-home glyphicon-l"></em>
+                    </div>
+                    <div class="col-sm-9 col-lg-7 widget-right">
+                        <div class="large">活动</div>
+                        <div class="text-muted">有新活动</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-2">
+                        <div class="servicelist">
+                            <!--clean start-->
+                            <a href="{% url "resident:clean" %}">
+                                <h2 class="servicetit servicetit1">保洁服务</h2>
+                            </a>
+                            <div class="inforlist" id="clean_panel">
+                                <a href="javascript:void(0)" onclick="showTips(0)">
+                                    <dl class="infor" data-val="1">
+                                        <dt><img src="{% static "serviceImg/bj_rcbj_a338277.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>日常保洁</h3>
+                                            <p>专业工具，擦洗扫拖</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(1)">
+                                    <dl class="infor" data-val="2">
+                                        <dt><img src="{% static "serviceImg/bj_jtcqbj_2970d37.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>家庭长期保洁</h3>
+                                            <p>摆脱繁琐家务，重获生活自由</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(2)">
+                                    <dl class="infor" data-val="3">
+                                        <dt><img src="{% static "serviceImg/bj_cbl_1dfa828.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>擦玻璃</h3>
+                                            <p>专业喷剂，洁净玻璃</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(3)">
+                                    <dl class="infor" data-val="4">
+                                        <dt><img src="{% static "serviceImg/bj_sdbj_a3391df.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>深度保洁</h3>
+                                            <p>阿姨帮明星服务，洁净超乎想象</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(4)">
+                                    <dl class="infor" data-val="5">
+                                        <dt><img src="{% static "serviceImg/bj_xjkh_febbe20.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>新居开荒</h3>
+                                            <p>新居入住开荒，清扫装修痕迹</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(5)">
+                                    <dl class="infor" data-val="6">
+                                        <dt><img src="{% static "serviceImg/bj_cfby_d4274e1.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>厨房保养</h3>
+                                            <p>厨房保养，感受敞亮空间</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(6)">
+                                    <dl class="infor" data-val="7">
+                                        <dt><img src="{% static "serviceImg/bj_wsjby_5315cd6.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>卫生间保养</h3>
+                                            <p>卫生间保养，焕发闪亮光洁</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                            </div>
+
+                            <!--clean end-->
+
+                            <!--fix start-->
+                            <h2 class="servicetit servicetit7">维修服务</h2>
+                            <div class="inforlist" id="fix_panel">
+                                <a href="javascript:void(0)" onclick="showTips(7)">
+                                    <dl class="infor" data-val="35">
+                                        <dt><img src="{% static "serviceImg/wxfw_gdst_6e7389d.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>管道疏通</h3>
+                                            <p>快速疏通，轻松快捷</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(8)">
+                                    <dl class="infor" data-val="36">
+                                        <dt><img src="{% static "serviceImg/wsfw_ktjf_bdfd844.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>空调加氟</h3>
+                                            <p>专业加氟，使用放心</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(9)">
+                                    <dl class="infor" data-val="37">
+                                        <dt><img src="{% static "serviceImg/wxfw_ktwx_13950f8.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>空调维修</h3>
+                                            <p>专业技师，专注维修</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(10)">
+                                    <dl class="infor" data-val="38">
+                                        <dt><img src="{% static "serviceImg/hsc_05bc30f.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>换纱窗</h3>
+                                            <p>扼“纱”危险,”窗“造平安</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(11)">
+                                    <dl class="infor" data-val="39">
+                                        <dt><img src="{% static "serviceImg/hs_e09ae46.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>换锁</h3>
+                                            <p>精于探”锁“,贵在创“芯”</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(12)">
+                                    <dl class="infor" data-val="45">
+                                        <dt><img src="{% static "serviceImg/sltgh_hdd_e07045c.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>水龙头更换</h3>
+                                            <p>一步到位，闪电更换</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(13)">
+                                    <dl class="infor" data-val="46">
+                                        <dt><img src="{% static "serviceImg/djaz_hdd_fec2704.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>灯具安装</h3>
+                                            <p>安装有保障，安全又无忧</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                                <a href="javascript:void(0)" onclick="showTips(14)">
+                                    <dl class="infor" data-val="47">
+                                        <dt><img src="{% static "serviceImg/mtwx_hdd_c0c8b76.png" %}" alt=""/></dt>
+                                        <dd>
+                                            <h3>马桶维修</h3>
+                                            <p>专业安装，更换马桶</p>
+                                            <div class="saw">查看详情</div>
+                                        </dd>
+                                    </dl>
+                                </a>
+                            </div>
+                            <div id="tip" class="tips" style="display: none">
+                                <br/>
+                                <h2 id="tipTitle"></h2>
+                                <button id="closeTip" onclick="closeTip()">关闭</button>
+                                <hr/>
+                                <h3 id="tipText"></h3>
+                                <p id="tipNum" style="display: none"></p>
+                                <button id="goto_demand" onclick="goto()">选择</button>
+                            </div>
+                            <!--fix end-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

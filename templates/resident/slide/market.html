@@ -1,0 +1,166 @@
+<!--
+    超市页面
+-->
+{% extends "resident/rheader.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static "market/css/reset.css" %}" > <!-- CSS reset -->
+	<link rel="stylesheet" href="{% static "market/css/style.css" %}"> <!-- Gem style -->
+    <style>
+    .goods-info p{
+        font-size: 17px;
+        color: black;
+    }
+    </style>
+{% endblock %}
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="#"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">社区超市</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header" style="font-size: 20px;">商品</h1>
+            <button id="showD" onclick="location.href='{% url "resident:myBuy" %}'" class="btn-info" style="height: 100%">查看订单</button>
+        </div>
+    </div><!--/.row-->
+    <header>
+
+		<div id="cd-cart-trigger" style="margin-top: 60px">
+            <a class="cd-img-replace" href="#0">购物车</a>
+        </div>
+	</header>
+    <div class="row">
+        <div class="panel panel-default col-sm-3">
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/market?type=all">全部</a></li>
+                {% for gt in goodtypes %}
+                <li class="list-group-item"><a href="/market?type={{ gt }}">{{ gt }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="goods" class="col-sm-9">
+            {% for good in goods %}
+            <div class="panel panel-default" style="margin-left: 5%;height: 20%">
+                <table data-toggle="table" >
+                    <div class="panel-body">
+                        <img class="col-sm-3" src="{% static "index/image/good.png" %}" style="" alt="">
+                        {#   按钮操作#}
+                        <div class="col-sm-8">
+                            <div class="goods-info" style="float: left">
+                                <p class="name">{{ good.goodname }}</p>
+
+                                <p class="specifics">{{ good.goodcontend }}</p>
+                                <p class="price">
+                                    <span class="now-price">价格：¥{{ good.goodprice }}</span>
+                                    <sub class="market-price" style="text-decoration:line-through">原价：¥{{ good.beforeprice }}</sub>
+                                </p>
+                                <span  class="glyphicon glyphicon-minus" onclick="minus({{ good.goodnum }})"></span>
+                                <span id="span{{ good.goodnum }}" class="num">0</span>
+                                <span class="glyphicon glyphicon-plus" onclick="plus({{ good.goodnum }})"></span>
+                                <br/>
+                                <button class="button-state-blue" onclick="addChart({{ good.goodnum }})">加购</button>
+                            </div>
+                        </div>
+                    </div>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="cd-shadow-layer"></div>
+
+	<div id="cd-cart">
+		<h2>购物车</h2>
+		<ul class="cd-cart-items">
+            {% for cart in carts %}
+			<li>
+				{{ cart.goodnum.goodname }}<span class="num">×{{ cart.goodmount }}件</span>
+				<div class="cd-price">单价：${{ cart.goodnum.goodprice }}</div>
+
+
+				<a class="cd-item-remove cd-img-replace" onclick="deleteCart({{ cart.id }})">删除</a>
+			</li>
+            {% endfor %}
+		</ul> <!-- cd-cart-items -->
+
+		<div class="cd-cart-total">
+			<p>总额 <span>${{ allmoney }}</span></p>
+		</div> <!-- cd-cart-total -->
+
+		<a href="{% url "resident:buy" %}?money={{ allmoney }}" class="checkout-btn">结算</a>
+
+		<p class="cd-go-to-cart"><a href="{% url "resident:cart" %}">去购物车页面</a></p>
+	</div> <!-- cd-cart -->
+</div>
+
+<!--/.main-->
+{% endblock %}
+
+{% block js %}
+
+    <script src="{% static "market/js/jquery-1.11.0.min.js" %}"></script>
+    <script src="{% static "market/js/main.js" %}"></script> <!-- Gem jQuery -->
+    <script>
+        function deleteCart(num) {
+            if(confirm("确认删除？"))
+            {
+                $.ajax({
+                    url: '{% url "resident:deleteCart" %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    async : true,
+                    data:{
+                        'num':num
+                    },
+                }).done(function(dat) {
+                    confirm(dat.result);
+                    location.href = "{% url "resident:market" %}";
+                })
+                .fail(function() {
+                    confirm('失败！');
+                });
+            }
+
+        }
+        function plus(num) {
+            const sp = document.getElementById("span"+num);
+            sp.innerHTML = parseInt(sp.innerHTML)+1;
+        }
+        function minus(num) {
+            const sp = document.getElementById("span"+num);
+            if(sp.innerHTML !== "0")
+            {
+                sp.innerHTML = parseInt(sp.innerHTML)-1;
+            }
+        }
+        function addChart(num) {
+            const sp = document.getElementById("span"+num);
+            let mount = sp.innerHTML;
+            if(mount !== "0")
+            {
+                $.ajax({
+                    url: '{% url "resident:addCart" %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    async : true,
+                    data:{
+                        'num':num,
+                        'mount':mount
+                    },
+                }).done(function(dat) {
+                    confirm(dat.result);
+                })
+                .fail(function() {
+                    confirm('加入失败！');
+                });
+            }
+
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,121 @@
+<!--
+    新闻页面
+-->
+
+
+{% extends "manager/mheader.html" %}
+{% load static %}
+{% block mainbody %}
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="{% url "managers:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+				<li class="active">建议和反馈</li>
+			</ol>
+		</div><!--/.row-->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">建议和反馈</h1>
+			</div>
+		</div><!--/.row-->
+        <div class="container row col-lg-12">
+           <div class="panel panel-default">
+               <div class="panel-body">
+                   <!--中间部分-->
+                   <div id="suggestionpage" class="col-md-7">
+                       {% for sug in suggestion %}
+                           <li>
+                               <div class="row item">
+                                   <div class="col-md-3">
+                                       <img style="width: 80px;height: 80px" src="{% static "images/sugges.jpg" %}" alt="">
+                                   </div>
+                                   <div class="col-md-9">
+                                       <div class="name">提出者：{{ sug.snum.rname }}</div>
+                                       <div class="content"><h4 id="contend{{ sug.id }}">问题：{{ sug.scontend }}</h4></div>
+                                       {% if sug.sanum != None  %}
+                                           <p>回答：{{ sug.sanswer}}</p>
+                                       {% else %}
+                                           <button id="answerbutton" onclick="answerFunc({{ sug.id }})">回答</button>
+                                       {% endif %}
+                                   </div>
+                               </div>
+                               <hr/>
+                           </li>
+                       {% endfor %}
+                   </div>
+                   <div class="col-md-7" id="answerpage" style="display: none">
+                       <div class="row item">
+                           <div class="col-md-3">
+                           </div>
+                           <div class="col-md-9">
+                               <input id="suggestion_id" type="hidden"/>
+                               <label>
+                                   <h3 id="anssuggestion" ></h3>
+                               <label>
+                                   回答
+                                   <textarea id="sanswer" style="width: 400px;height: 100px;border:1px solid black;" class="form-control" ></textarea>
+                               </label>
+                               <br/>
+                               <input type="button" class="btn btn-primary" onclick="suggest()" value="提交"/>
+                               <input type="button" class="btn btn-primary" onclick="retsug()" value="返回"/>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+
+        </div>
+	</div>	<!--/.main-->
+
+<script>
+    function answerFunc(num){
+        const sugpage = document.getElementById("suggestionpage");
+        const anspage = document.getElementById("answerpage");
+        const suggestion = document.getElementById("contend"+num).innerHTML;
+        const anssuggestion = document.getElementById("anssuggestion");
+        const suggestion_id = document.getElementById("suggestion_id");
+        sugpage.style.display = "none";
+        anspage.style.display = "";
+        anssuggestion.innerHTML = suggestion;
+        suggestion_id.value = num;
+    }
+    function retsug() {
+        const sugpage = document.getElementById("suggestionpage");
+        const anspage = document.getElementById("answerpage");
+        sugpage.style.display = "";
+        anspage.style.display = "none";
+    }
+    function suggest() {
+        const suggestion_id = document.getElementById("suggestion_id").value;
+        const sanswer = document.getElementById("sanswer").value;
+        if(sanswer === "")
+        {
+            confirm("回答为空！");
+        }
+        else
+        {
+            if(confirm("是否提交？"))
+            {
+                $.ajax({
+                    url: '{% url "managers:answer" %}',
+                    type: 'POST',
+                    dataType: 'json',
+                    async : false,
+                    data:{
+                        'answer':sanswer,
+                        'id':suggestion_id
+                    },
+                }).done(function(dat) {
+                    alert(dat.result);
+                    window.location.href = "{% url "managers:allsuggestion" %}"
+                })
+                .fail(function() {
+                    alert('删除失败！');
+                });
+            }
+        }
+    }
+</script>
+{% endblock %}

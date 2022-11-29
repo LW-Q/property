@@ -1,0 +1,358 @@
+img {
+	max-width: 100%
+}
+.tips{
+	position: fixed;
+	top: 25%;
+	left: 32%;
+	width: auto;
+	height: 70%;
+	margin-right: 15%;
+	border:1px solid #14a7f4;
+	background-color: white;
+}
+.tips h2{
+	display:inline;
+	margin-left: 20px;
+	margin-bottom: -20px;
+	margin-top: -30px;
+	width: 100%;
+	height: 30px;
+}
+.tips h3{
+	font-size: 20px;
+	line-height: 1.5;
+	width: 98%;
+	height: auto;
+	margin-left: 2%;
+}
+.tips button{
+	font-size: 20px;
+	line-height: 31px;
+	letter-spacing: 0.143em;
+	font-style: normal;
+	margin-left: 40%;
+}
+/*111*/
+.servicelist {
+	margin: 0 auto;
+	max-width: 1140px
+}
+
+.servicetit {
+	width: 120px;
+	height: 34px;
+	line-height: 34px;
+	font-size: 20px;
+	font-weight: 400;
+	color: #fff;
+	padding-left: 12px;
+	margin: 40px 0 16px 20px
+}
+
+.servicetit1 {
+	background: url("./arrow1_18c7959.jpg") no-repeat
+}
+
+.servicetit7 {
+	background: url("./arrow7_3b3dbbc.jpg") no-repeat
+}
+
+.servicetitle.servicetitle7 p {
+	background: #ef5fff
+}
+
+.inforlist {
+	overflow: hidden;
+	max-width: 1140px;
+	margin: 0 auto
+}
+
+.infor {
+	width: 27%;
+	height: 92px;
+	float: left;
+	margin: 0 .6% 1.1% .5%;
+	border: solid 1px #fff
+}
+
+.infor:hover {
+	background: #f2fcfb;
+	border: solid 1px #b2ebe7;
+	border-radius: 3px
+}
+
+.infor:hover dd .saw {
+	display: block
+}
+
+.infor:hover dd p {
+	width: 152px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis
+}
+
+.infor dt {
+	width: 97px;
+	height: 92px;
+	float: left
+}
+
+.infor dt img {
+	width: 64px;
+	height: 64px;
+	margin: 14px auto;
+	display: block
+}
+
+.infor dd {
+	height: 80px;
+	position: relative;
+	overflow: hidden
+}
+
+.infor dd h3 {
+	font-size: 20px;
+	color: #333;
+	margin: 20px 0 7px;
+	white-space: nowrap
+}
+
+.infor dd p {
+	font-size: 14px;
+	color: #999
+}
+
+.infor dd .saw {
+	width: 72px;
+	height: 32px;
+	background: #00beaf;
+	border-radius: 3px;
+	font-size: 12px;
+	color: #fff;
+	text-align: center;
+	line-height: 32px;
+	position: absolute;
+	right: 15px;
+	top: 30px;
+	display: none
+}
+
+.servicetitle {
+	display: none
+}
+/*111*/
+
+@-webkit-keyframes changeHeight {
+	from {
+		top: -100%
+	}
+
+	to {
+		top: 0
+	}
+}
+
+@-webkit-keyframes changeHeights {
+	from {
+		top: 0
+	}
+
+	to {
+		top: -500%
+	}
+}
+
+@media (max-width:1160px) {
+	.enterlist li {
+		width: 50%;
+		float: left;
+		margin-right: 0;
+		margin-bottom: 30px
+	}
+
+	.enterlist li div {
+		margin: 0 auto
+	}
+
+	.entertit.phone {
+		display: block
+	}
+
+	.entertit.pc {
+		display: none
+	}
+
+	.logolist {
+		width: auto;
+		height: auto;
+		margin: 0 40px 20px
+	}
+}
+
+@media (min-width:1140px) {
+	.servicelist {
+		width: 1140px
+	}
+/*	111*/
+}
+
+@media (max-width:1090px) {
+	.aboutInfor ul li {
+		width: 33%;
+		margin-bottom: 20px
+	}
+}
+
+@media (max-width:1000px) {
+	.list li {
+		margin-right: 6%
+	}
+}
+
+@media (max-width:960px) {
+	.list {
+		width: 55%
+	}
+
+	.list li {
+		margin-right: 5%
+	}
+	.infor{
+		width: 48%;
+		margin: 0 0 1.1%;
+	}
+}
+
+@media (max-width:920px) {
+	.list {
+		width: 50%
+	}
+
+	.list li {
+		margin-right: 4%
+	}
+
+	.infor {
+		width: 48%;
+		margin: 0 0 1.1%
+	}
+}
+
+@media (max-width:750px) {
+	.servicetit {
+	}
+
+	.servicetitle.on {
+		background-size: 100% 1px;
+		background-repeat: no-repeat;
+		background-position: top
+	}
+
+	.servicetitle {
+		height: .8rem;
+		line-height: .8rem;
+		font-size: .32rem;
+		color: #333;
+		font-weight: 400;
+		padding-left: .32rem;
+		overflow: hidden;
+		display: block
+	}
+
+	.servicetitle p {
+		margin: .23rem .19rem .23rem 0;
+		width: .06rem;
+		height: .36rem;
+		background: #00beaf;
+		float: left
+	}
+
+	.inforlist {
+		padding: .05rem 0 0;
+		background-size: 100% 1px,100% 1px;
+		background-repeat: no-repeat;
+		background-position: top,bottom
+	}
+
+	.infor {
+		width: 24.4%;
+		height: 200px;
+		padding: .05rem 0;
+		margin: 0 0 .2rem
+	}
+
+	.infor:hover {
+		background: 0 0;
+		border: solid 1px #fff
+	}
+
+	.infor dt {
+		width: 88px;
+	  height: 80px;
+		float: none;
+		margin: 0 auto
+	}
+
+	.infor dt img {
+		width: 50px;
+		height: 50px
+	}
+
+	.infor dd {
+		height: auto
+	}
+
+	.infor dd h3 {
+		font-size: 10px;
+		color: #999;
+		text-align: center;
+		font-weight: 400;
+		margin: .1rem 0 0
+	}
+
+	.infor .noCma {
+		display: block!important
+	}
+
+	.infor .cma {
+		display: none
+	}
+
+	.infor dd p,.infor:hover dd .saw {
+		display: none
+	}
+}
+
+@media (max-width:720px) {
+	.aboutInfor ul li {
+		width: 100%;
+		height: auto
+	}
+}
+
+@media (max-width:640px) {
+	.infor {
+		width: 24.4%;
+		height: auto
+	}
+}
+
+@media (max-width:580px) {
+	.infor {
+		width: 24%;
+		height: auto
+	}
+}
+
+@media (max-width:410px) {
+	.infor {
+		width: 24%;
+		height: auto
+	}
+
+	.aboutInfor {
+		overflow: hidden
+	}
+}

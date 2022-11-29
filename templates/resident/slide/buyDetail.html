@@ -1,0 +1,78 @@
+
+{% extends "resident/rheader.html" %}
+
+{% block mainbody %}
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+<div class="row" id="pay_app" style="">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div style="width: 66%;margin-left: 17%">
+                <div style="text-align: center">
+                    <h4>下单时间:<time id="time">{{ order.ordertime }}</time></h4>
+
+                    <h4>费用明细:</h4>
+                    <table border="1" style="text-align: center;width: 100%;">
+                        <tr>
+                            <td>品名</td>
+                            <td>价格（元）</td>
+                            <td>数量（件）</td>
+                            <td>合计（元）</td>
+                        </tr>
+                         {% for ca in cart %}
+                            <tr>
+                                <td>{{ ca.goodnum.goodname }}</td>
+                                <td>{{ ca.goodnum.goodprice }}</td>
+                                <td>{{ ca.goodmount }}</td>
+                                <td>{{ ca.price }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+            <div style="text-align: center;width: 66%;margin-left: 17%">
+                <form id="changeOrderForm" method="post">
+                    <h4>
+                        <span>姓&emsp;&emsp;名:{{ username }}</span>
+                        <br/>
+                        <br/>
+                        <input type="hidden" name="num" value="{{ order.ordernum }}"/>
+                        <label>
+                            <input type="text" id="address" name="address" class="form-control" value="{{ order.address }}" placeholder="请输入地址">
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="text" id="tele" name="tele" class="form-control" value="{{ order.tele }}" placeholder="请输入电话">
+                        </label>
+                    </h4>
+                    <h5>总金额:{{ order.money }}元</h5>
+                </form>
+                <button class="mui-btn" onclick="submit(1)">修改</button>
+                <button class="mui-btn" onclick="submit(2)">取消订单</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    function submit(num) {
+        const changeForm = document.getElementById("changeOrderForm");
+        if(num === 1){
+            if(confirm("确认修改?")){
+                changeForm.action = "{% url "resident:changeOrder" %}";
+                changeForm.submit();
+            }
+        }
+        if(num === 2){
+            if(confirm("确认删除?")){
+                changeForm.action = "{% url "resident:deleteOrder" %}";
+                changeForm.submit();
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "worker/wheader.html" %}
+
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "resident:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">个人中心</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">个人中心</h1>
+        </div>
+    </div><!--/.row-->
+
+    <!--个人信息-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-6 col-sm-offset-4">
+                        <form action="{% url "worker:changeWo" %}" method="post" id="change_msg" role="form" class="form-horizontal">
+                            <div class="form-group">
+                                <label>工号</label>
+                                <br/>
+                                <label>
+{#                                    {{ user.rnum }}#}
+                                    <input value="{{ user.wnum }}" type="text" style="width: 300px; border:1px solid black;" name="num" id="num" class="form-control" placeholder="户号" readonly="readonly">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>姓名</label>
+                                <br/>
+                                <label>
+                                    <input value="{{ user.wname }}" type="text" style="width: 300px; border:1px solid black;" name="name" id="name" class="form-control" placeholder="姓名">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>新密码</label>
+                                <br/>
+                                <label>
+                                    <input name="password" id="password" style="width: 300px; border:1px solid black;" type="password" class="form-control">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>再输入一次新密码</label>
+                                <br/>
+                                <label>
+                                    <input name="newpassword" id="newpassword" style="width: 300px; border:1px solid black;" type="password" class="form-control" onkeyup="checkpassword()">
+                                    <span id="warn_password">
+                                        <br><span id="warnpass" style="color: green"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>工作类型</label>
+                                <br/>
+                                <label>
+                                    <input name="type" type="hidden" value="{{ user.wtype }}"/>
+                                    <input value="{{ user.wtypename }}" type="text" style="width: 300px; border:1px solid black;" name="type"  class="form-control" readonly="readonly">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>现结任务</label>
+                                <br/>
+                                <label>
+                                    <input value="{{ user.wtasknum }}" type="text" style="width: 300px; border:1px solid black;" name="tasknum" id="tasknum" class="form-control" placeholder="现接任务">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>已完成数量</label>
+                                <br/>
+                                <label>
+                                    <input value="{{ user.wtaskmount }}" type="text" style="width: 300px; border:1px solid black;" name="taskmount" id="taskmount" class="form-control" placeholder="已完成数量">
+                                </label>
+                            </div>
+                        <div class="form-group">
+                                <label>入职时间</label>
+                                <br/>
+                                <label>
+                                    <input type="text" value="{{ user.wjoindate }}"  style="width: 300px; border:1px solid black;" name="joindate" id="joindate" class="form-control" readonly="readonly">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>休假信息</label>
+                                <br/>
+                                <label>
+                                    <textarea name="holiday"  id="contend" style="width: 300px; border:1px solid black;" class="form-control" rows="3">{{ user.wholiday }}</textarea>
+                                </label>
+                            </div>
+                            <button id="submit" type="submit" onclick="thing()" class="btn btn-primary">修改</button>
+                        </form>
+                    </div>
+                </div>
+            </div><!-- /.col-->
+        </div>
+    </div><!-- 个人信息 -->
+</div>
+    <script type="text/javascript">{{ script }}({{ wrong }})</script>
+<!--判断密码一致-->
+<script type="text/javascript">
+    function thing() {
+        const hh = document.getElementById("change_msg");
+        const password = document.getElementById("password").value;
+        const repassword = document.getElementById("newpassword").value;
+        if(password !== "" && repassword === "")
+        {
+            alert("再输入一次新密码!");
+        }
+        else{
+            hh.submit;
+        }
+    }
+    function checkpassword() {
+        const password = document.getElementById("password").value;
+        const repassword = document.getElementById("newpassword").value;
+        const warn_pa = document.getElementById("warnpass");
+        const sub =  document.getElementById("submit");
+        if (password === repassword) {
+            warn_pa.style="color:green";
+            warn_pa.innerHTML = "两次输入密码一致";
+            sub.disabled = false;
+
+        } else {
+            warn_pa.style="color:red";
+            warn_pa.innerHTML = "两次输入密码不一致!";
+            sub.disabled = true;
+        }
+    }
+</script>
+
+
+{% endblock %}

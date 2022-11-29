@@ -1,0 +1,81 @@
+{% extends "manager/mheader.html" %}
+
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "managers:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">所有任务</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">所有任务</h1>
+        </div>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-8 col-sm-offset-2">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>类型</th>
+                                    <th>需求描述</th>
+                                    <th>业主名</th>
+                                    <th>地址</th>
+                                    <th>是否被接取</th>
+                                    <th>工人名</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for dem in demand %}
+                                <tr>
+                                    <td>{{ dem.get_dtype_display }}</td>
+                                    <td>{{ dem.dcontend }}</td>
+                                    <td>{{ dem.drnum.rname }}</td>
+                                    <td>{{ dem.drnum.raddress }}</td>
+                                    {% if not dem.is_accept  %}
+                                        <td>否</td>
+                                        <td>无</td>
+                                    {% else %}
+                                        <td>是</td>
+                                        <td>{{ dem.dwnum }}</td>
+                                    {% endif %}
+                                    {% if not dem.is_accept %}
+                                        <td>
+                                            <a href="javascript:void(0)" id="get" onclick="gettask({{ dem.dnum }})">接取</a>
+                                        </td>
+                                    {% elif dem.dwnum == manager.wnum %}
+                                        <td>你已接取</td>
+                                    {% else %}
+                                        <td>已被接取</td>
+                                    {% endif %}
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div><!-- /.col-->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function gettask(num) {
+        if(window.confirm("确认接取吗?"))
+        {
+            let durl = "/worker/gettask/"+num;
+            console.log(durl);
+            window.location.href = durl;
+        }
+    }
+</script>
+
+{% endblock %}

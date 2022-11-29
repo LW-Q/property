@@ -1,0 +1,147 @@
+<!--
+    缴费页面
+    可以搞一个曲线图
+-->
+
+
+{% extends "resident/rheader.html" %}
+{% load static %}
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "resident:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">支付页面</li>
+        </ol>
+    </div><!--/.row-->
+
+    <!--此处应写缴费成功的判断-->
+    <div class="row" id="pay_app" style="">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-6 col-sm-offset-4">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">付款页面</h1>
+                    </div>
+                    <div  id="pay-form">
+                        <div>
+                            <label>
+                                <textarea id="note" placeholder="备注,还需要什么请输入"></textarea>
+                            </label>
+                        </div>
+                        <div class="order-info">
+                            <div class="info">
+                                <p>金额：<span class="pay-total">{{money}}</span>元</p>
+                            </div>
+                        </div>
+                        <!-- 选择支付方式 -->
+                        <div class="payment-bd">
+                            <strong>支付平台</strong>
+                            <label for="r1" >
+                                <input class="input_tab1" name="myradio"  type="radio" value="1" checked="checked" />
+                                <img style="width: 40px;height: 40px" src="{% static "images/resident/zhifubao.jpg" %}" alt=""/>
+                            </label>
+                            <label for="r2" >
+                                <input class="input_tab2" name="myradio"  type="radio" value="2"/>
+                                <img style="width: 40px;height: 40px" src="{% static "images/resident/weixin.jpg" %}" alt=""/>
+                            </label>
+                        </div>
+                        <div class="box-ft clearfix">
+                            <input type="button" class="btn btn-primary" value="支付" id="payBtn" onclick="payof()"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="suc_div" style="display: none">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-8">
+                    <div id="alipay" style="display: none;">
+                        <input class="btn btn-primary" value="返回" type="button" onclick="ret()"/>
+                        <br/>
+                        <div class="col-md-5">
+                            <img src="{% static "images/resident/zhifubaoshou.jpg" %}" style="width: 200px;height: 300px" alt="">
+                        </div>
+                        <div>
+                            <form action="{% url "resident:payser_success" %}" method="post" class="form">
+                                {% csrf_token %}
+                                <label>
+                                    <input id="ali_note" name="note" placeholder="无备注" class="form-control" readonly/>
+                                </label>
+                                <input  type="hidden" name="paywnum" value="{{wornum}}"/>
+                                <input  type="hidden" name="type" value="{{type}}"/>
+                                <br/>
+                                <input class="btn btn-primary" value="支付成功" type="submit" />
+                            </form>
+                        </div>
+                    </div>
+                    <div id="wechatpay"  style="display: none">
+                        <input class="btn btn-primary" value="返回" type="button" onclick="ret()"/>
+                        <br/>
+                        <div class="col-md-5">
+                            <img src="{% static "images/resident/weixinshou.jpg" %}" style="width: 200px;height: 300px" alt="">
+                        </div>
+                        <div>
+                            <form action="{% url "resident:payser_success" %}" method="post">
+                                {% csrf_token %}
+                                <label>
+                                    <input id="we_note" name="note" placeholder="无备注" class="form-control" readonly/>
+                                </label>
+                                <input  type="hidden" name="paywnum" value="{{wornum}}"/>
+                                <br/>
+                                <input class="btn btn-primary" value="支付成功" type="submit"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function payof() {
+    const pay1 = document.getElementById("pay_app");
+    const suc_div = document.getElementById("suc_div");
+    const pay2 = document.getElementById("alipay");
+    const pay3 = document.getElementById("wechatpay");
+    const note = document.getElementById("note");
+    const ali_note = document.getElementById("ali_note");
+    const we_note = document.getElementById("we_note");
+    const radioValue = document.getElementsByName("myradio");
+    console.log(radioValue);
+    suc_div.style.display = "";
+    for(let i=0;i<radioValue.length;i++){
+        if(radioValue[i].value==="1" && radioValue[i].checked)
+        {
+            console.log(radioValue[i].value);
+            pay1.style.display="none";
+            pay2.style.display="";
+            ali_note.value = note.value;
+            pay3.style.display="none";
+        }
+        if(radioValue[i].value==="2" && radioValue[i].checked)
+        {
+            console.log(radioValue[i].value);
+            pay1.style.display="none";
+            pay2.style.display="none";
+            pay3.style.display="";
+            we_note.value = note.value;
+        }
+    }
+
+}
+function ret() {
+
+    const pay1 = document.getElementById("pay_app");
+    const pay2 = document.getElementById("alipay");
+    const pay3 = document.getElementById("wechatpay");
+    const suc_div = document.getElementById("suc_div");
+    pay1.style.display="";
+    suc_div.style.display="none";
+    pay2.style.display="none";
+    pay3.style.display="none";
+}
+</script>
+{% endblock %}

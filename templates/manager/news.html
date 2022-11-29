@@ -1,0 +1,194 @@
+<!--
+    新闻页面
+-->
+
+
+{% extends "manager/mheader.html" %}
+{% load static %}
+{% block mainbody %}
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="{% url "managers:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+				<li class="active">新闻</li>
+			</ol>
+		</div><!--/.row-->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">新闻
+                    <button id="addnewbutton"  onclick="addpage()" class="btn btn-primary">添加</button>
+                </h1>
+            </div>
+		</div><!--/.row-->
+        <div class="container row col-lg-12">
+           <div class="panel panel-default">
+               <div class="panel-body" id="news">
+                   <!--中间部分-->
+                   <div id="newmsg" class="col-md-7">
+                       {% for new in news %}
+                           <a  href="javascript:void(0)" style="" onclick="display_new({{ new.newsnum }})">
+                               <li>
+                                   <div class="row item">
+                                       <div class="col-md-3">
+                                           <img style="width: 80px;height: 60px" src="{% static "images/news.jpg" %}" alt="">
+                                       </div>
+                                       <div class="col-md-9">
+                                           <div class="title"><h4>{{ new.newstitle }}</h4></div>
+                                           <div class="info">{{ new.newsdate }}</div>
+                                           <div id="t{{ new.newsnum }}" style="display: none">{{ new.newstitle }}</div>
+                                           <div id="c{{ new.newsnum }}" style="display: none">{{ new.newscontend }}</div>
+                                       </div>
+                                   </div>
+                               </li>
+                           </a>
+                       <input type="button" class="btn btn-primary" onclick="deleteNew({{ new.newsnum }})" value="删除"/><hr/>
+                       {% endfor %}
+                   </div>
+                   <div class="info" id="newmain" style="display: none">
+                       <div class="row item">
+                           <div class="col-md-3">
+                           </div>
+                           <div class="col-md-9">
+                               <form id="changenew" action="{% url "managers:changenews" %}" method="post" role="form" class="form-horizontal">
+                                   <input name="cnum" id="cnum" type="hidden" value=""/>
+                                   <div class="form-group">
+                                       <label>标题
+                                           <input type="text" name="ctitle" id="ctitle" class="form-control" placeholder="标题" style="width: 500px;"/>
+                                       </label>
+                                   </div>
+                                   <div class="form-group">
+                                       <label>内容
+                                       <textarea name="ccontend" id="ccontend" class="form-control" style="width: 500px;height: 200px; border:1px solid black;" placeholder="新闻内容"></textarea>
+                                       </label>
+                                   </div>
+                                   <label>
+                                       <input type="button" class="btn btn-primary" onclick="changenews()"  value="修改"/>
+                                       <input type="button" class="btn btn-primary" onclick="retnews()" value="返回"/>
+                                   </label>
+                               </form>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+
+               <div id="addpage" style="display: none" class="panel-body col-md-6 col-sm-offset-3">
+                   <form id="addform" action="{% url "managers:addnews" %}" method="post" role="form" class="form-horizontal">
+                       <div class="form-group">
+                           <label>
+                               <input type="text" id="title" name="title" class="form-control" placeholder="标题" style="width: 500px;"/>
+                           </label>
+                       </div>
+                       <div class="form-group">
+                           <label>
+                               <textarea id="contend" name="contend" class="form-control" style="width: 500px;height: 200px; border:1px solid black;" placeholder="新闻内容"></textarea>
+                           </label>
+                       </div>
+                   </form>
+                   <button id="addbutton" onclick="addbutton()" class="btn btn-primary">添加</button>
+                   <button id="ret"  onclick="ret()" class="btn btn-primary">返回</button>
+               </div>
+               </div>
+
+
+        </div>
+	</div>	<!--/.main-->
+
+<script>
+    function display_new(num){
+        const c1 = document.getElementById("newmsg");
+        const c2 = document.getElementById("newmain");
+        const c3 = document.getElementById("addnewbutton");
+        const s1 = document.getElementById("ctitle");
+        const s2 = document.getElementById("ccontend");
+        const s3 = document.getElementById("cnum");
+        const mm1 = document.getElementById("t"+num).innerHTML;
+        const mm2 = document.getElementById("c"+num).innerHTML;
+        c1.style.display = "none";
+        c2.style.display = "";
+        c3.style.display="none";
+        s1.value = mm1;
+        s2.innerText = mm2;
+        s3.value = num;
+    }
+    function retnews() {
+        const c1 = document.getElementById("newmsg");
+        const c2 = document.getElementById("newmain");
+        const c3 = document.getElementById("addnewbutton");
+        c1.style.display = "";
+        c3.style.display = "";
+        c2.style.display = "none";
+    }
+    function addpage(){
+        const c1 = document.getElementById("news");
+        const c2 = document.getElementById("addpage");
+        const c3 = document.getElementById("addnewbutton");
+        c1.style.display = "none";
+        c3.style.display = "none";
+        c2.style.display = "";
+    }
+    function ret() {
+        const c1 = document.getElementById("news");
+        const c2 = document.getElementById("addpage");
+        const c3 = document.getElementById("addnewbutton");
+        c1.style.display = "";
+        c3.style.display = "";
+        c2.style.display = "none";
+    }
+    function changenews() {
+        const s1 = document.getElementById("ctitle");
+        const s2 = document.getElementById("ccontend");
+        const f1 = document.getElementById("changenew");
+        if(s1.value === "")
+        {
+            confirm("请输入标题");
+            s1.focus();
+        }
+        else if(s2.value === "")
+        {
+            confirm("请输入新闻内容");
+            s2.focus();
+        }
+        else {
+            f1.submit();
+        }
+    }
+    function addbutton() {
+        const title = document.getElementById("title");
+        const contend = document.getElementById("contend");
+        const addForm = document.getElementById("addform");
+        if(title.value === "")
+        {
+            confirm("请输入标题");
+            title.focus();
+        }
+        else if(contend.value === "")
+        {
+            confirm("请输入新闻内容");
+            contend.focus();
+        }
+        else {
+            console.log(addForm);
+            addForm.submit();
+        }
+    }
+    function deleteNew(num) {
+        if(confirm("确认删除?"))
+        {
+            $.ajax({
+                url: '{% url "managers:deleteNew" %}',
+                type: 'POST',
+                dataType: 'json',
+                async:true,
+                data:{'num':num},
+            }).done(function(dat) {
+                alert(dat.result);
+                window.location.href = "{% url "managers:shownews" %}"
+            })
+            .fail(function() {
+                alert('删除失败！');
+            });
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "worker/wheader.html" %}
+
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "worker:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">所有任务</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">所有任务</h1>
+        </div>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-8 col-sm-offset-2">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>类型</th>
+                                    <th>需求描述</th>
+                                    <th>业主名</th>
+                                    <th>地址</th>
+                                    <th>是否被接取</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% if demand is None %}
+                                <tr>
+                                    <td>无</td>
+                                    <td>无</td>
+                                    <td>无</td>
+                                    <td>无</td>
+                                    <td>无</td>
+                                    <td>无</td>
+                                </tr>
+                            {% endif %}
+                            {% for dem in demand %}
+
+                                <tr>
+                                    <td>{{ dem.get_dtype_display }}</td>
+                                    <td>{{ dem.dcontend }}</td>
+                                    <td>{{ dem.drnum.rname }}</td>
+                                    <td>{{ dem.drnum.raddress }}</td>
+                                    <td>是</td>
+                                    <td>你已经接取</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div><!-- /.col-->
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

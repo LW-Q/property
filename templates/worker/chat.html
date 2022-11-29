@@ -1,0 +1,120 @@
+{% extends "worker/wheader.html" %}
+
+
+{% load static %}
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><span class="glyphicon glyphicon-home"></span></li>
+            <li class="active">会话室</li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default" style="height: 500px;">
+                <div class="panel-body">
+                    我的账号：<span id="userid"></span>&nbsp;&nbsp;&nbsp;&nbsp;对方账号：<span id="otherid"></span>
+                    <label for="historymsg"></label>
+                    <div id="historymsg" style="border: 1px solid black;width:100%;height: 250px;overflow: auto"></div>
+
+                    <label for="msg"></label>
+                    <textarea id="msg" style="width:100%;height: 50px;"></textarea>
+
+                    <input class="btn btn-info btn-block" type="button" onclick="send()" value="发送">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script>
+    let ws, myid;
+    console.log("{{ id }}");
+    window.onload = function () {
+        //先判断浏览器是否支持websocket
+        if ("WebSocket" in window) {
+            // 打开一个 web socket,链接服务器
+            ws = new WebSocket("ws://127.0.0.1:8000/connect/");
+            ws.onopen = function () {
+                // Web Socket 已连接上，使用 send() 方法尝试发送数据
+                ws.send("{{ id }}");
+                confirm("连接成功");
+            };
+            //监听服务端是否有消息发送过来，当有消息时执行方法
+            ws.onmessage = function (evt) {
+                //获取服务器发来的消息
+                const received_msg = evt.data;
+                //判断是返回的是消息还是用户列表和id，1是消息，0是用户列表和id
+                msg = eval("(" + received_msg + ")");
+                console.log(msg);
+                //用户列表和id
+                if (msg.type === 0) {
+                    //userid为空表示更新用户列表,不需要更新自己的id，否则为初次登录
+                    if (msg.userid != null) {
+                        myid = msg.userid;
+                        $("#userid").append(myid);
+                    }
+                    //当收到新的用户列表时，清空原来的用户列表,清空原来的用户选择框,添加群组发送选项
+                    document.getElementById("otherid").innerHTML = "";
+                    for (let i=0;i<2;i++)
+                    {
+                        if(msg.userlist[i] !== myid)
+                        {
+                             document.getElementById("otherid").innerHTML = msg.userlist[i];
+                        }
+                    }
+
+                }
+                //用户发送的消息
+                else {
+                    var myDate = new Date();
+                    let nowtime = myDate.toLocaleString(); //获取日期与时间
+                    //判断是自己的消息，绿色显示
+                    let p1 = document.createElement("p");
+                    let p2 = document.createElement("p");
+                    if (myid === msg.data.user) {
+                        p1.style.color = 'blue';
+                        p1.append(msg.data.user + ":" + nowtime);
+                        p2.style.color = 'blue';
+                        p2.append(msg.data.msg);
+                    } else {
+                        p1.append(msg.data.user + ":" + nowtime);
+                        p2.append(msg.data.msg);
+                    }
+                    document.getElementById("historymsg").appendChild(p1);
+                    document.getElementById("historymsg").appendChild(p2);
+                }
+            };
+            //关闭页面或其他行为导致与服务器断开链接是执行
+            ws.onclose = function () {
+                // 关闭 websocket
+                alert("连接已关闭...");
+            };
+        } else {
+            // 浏览器不支持 WebSocket
+            alert("您的浏览器不支持 WebSocket!");
+        }
+    };
+	//消息发送
+    function send() {
+        const msgtxt = document.getElementById("msg");
+        const msguser = document.getElementById("otherid").innerHTML;
+        msg = {
+            txt: msgtxt.value,
+            userto: msguser,
+            userfrom: myid
+        };
+        //发送消息后清空消息框，并定位到消息框内
+        $.post(
+            "/msg_send/",
+            msg,
+            function () {
+                msgtxt.value= "";
+                msgtxt.focus()
+            }
+        )
+    }
+
+</script>
+{% endblock %}

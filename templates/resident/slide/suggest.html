@@ -1,0 +1,37 @@
+{% extends "resident/rheader.html" %}
+
+{% block mainbody %}
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "resident:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">报修</li>
+        </ol>
+    </div><!--/.row-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table border="1" style="text-align: center;width: 100%;">
+                            <tr>
+                                <td>品名</td>
+                                <td>价格（元）</td>
+                                <td>数量（件）</td>
+                                <td>合计（元）</td>
+                            </tr>
+                             {% for ca in cart %}
+                                <tr>
+                                    <td>{{ ca.goodnum.goodname }}</td>
+                                    <td>{{ ca.goodnum.goodprice }}</td>
+                                    <td>{{ ca.goodmount }}</td>
+                                    <td>{{ ca.price }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

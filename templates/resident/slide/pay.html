@@ -1,0 +1,249 @@
+{% extends "resident/rheader.html" %}
+{% comment %}
+    缴费页面
+    可以搞一个曲线图
+    接入支付宝接口，支付时调用支付宝
+{% endcomment %}
+
+{% load static %}
+{% block mainbody %}
+
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url "resident:index" %}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li class="active">缴费</li>
+        </ol>
+    </div><!--/.row-->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">缴费</h1>
+        </div>
+    </div><!--/.row-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="mui-content">
+                    <div id="slider" class="mui-slider">
+                        <div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+                            <div class="panel-title col-sm-12" style="margin-left: 25%;width: 50%;font-size: 20px">
+                                <a class="mui-control-item mui-active" href="#item1mobile">
+                                    水费
+                                </a>
+                                <a class="mui-control-item" href="#item2mobile">
+                                    电费
+                                </a>
+                                <a class="mui-control-item" href="#item3mobile">
+                                    物业费
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mui-slider-group">
+                            <div id="item1mobile" class="mui-slider-item mui-control-content mui-active" style="background-color: white;text-align: center">
+                                <div class="panel-body " style="margin-left: 25%;width: 50%;">
+                                <h4>应缴水费:&nbsp;&nbsp;&nbsp;&nbsp;{{ water.paysum }}元</h4>
+                                {% if water.paysum != 0 %}
+                                    <p>注:应在{{ water.paydate }}之前缴费,逾期会停水</p>
+                                {% else %}
+                                    <p>无需缴纳水费</p>
+                                {% endif %}
+                                <form action="{% url "resident:payPage" %}" method="post">
+                                    {% csrf_token %}
+                                    <input  type="hidden" name="paytype" value="1"/>
+                                    <button type="submit" class="btn btn-primary">支付</button>
+                                </form>
+                                </div>
+                            </div>
+                            <div id="item2mobile" class="mui-slider-item mui-control-content"  style="background-color: white;text-align: center">
+                                <div class="panel-body" style="margin-left: 25%;width: 50%;">
+                                <h4>应缴电费:&nbsp;&nbsp;&nbsp;&nbsp;{{ electricity.paysum }}元</h4>
+                                {% if electricity.paysum != 0 %}
+                                    <p>注:应在{{ electricity.paydate }}之前缴费,逾期会停电</p>
+                                {% else %}
+                                    <p>无需缴纳电费</p>
+                                {% endif %}
+                                <form action="{% url "resident:payPage" %}" method="post">
+                                    {% csrf_token %}
+                                    <input  type="hidden" name="paytype" value="2"/>
+                                    <button type="submit" class="btn btn-primary">支付</button>
+                                </form>
+                                </div>
+                            </div>
+                            <div id="item3mobile" class="mui-slider-item mui-control-content"  style="background-color: white;text-align: center">
+                                <div class="panel-body" style="margin-left: 25%;width: 50%;">
+                                <h4>应缴物业费:&nbsp;&nbsp;&nbsp;&nbsp;{{ propay.paysum }}元</h4>
+                                {% if propay.paysum != 0 %}
+                                    <p>注:应在{{ propay.paydate }}之前缴费,逾期会禁止门禁</p>
+                                {% else %}
+                                    <p>无需缴纳物业费</p>
+                                {% endif %}
+                                <form action="{% url "resident:payPage" %}" method="post">
+                                    {% csrf_token %}
+                                    <input  type="hidden" name="paytype" value="3"/>
+                                    <button type="submit" class="btn btn-primary">支付</button>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default" id="statistic" style="margin-bottom: 50px">
+                <h3 style="margin-left: 45%;width: 10%">缴费记录</h3>
+                <table class="table table-striped table-bordered" style="border: 2px;margin-left: 20%;width: 60%;text-align: center">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center">序号</th>
+                            <th style="text-align: center">缴费类型</th>
+                            <th style="text-align: center">缴费金额</th>
+                            <th style="text-align: center">缴费日期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for rcd in record %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ rcd.get_type_display }}</td>
+                            <td>{{ rcd.paymoney }}</td>
+                            <td>{{ rcd.date }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>	<!--/.main-->
+{% endblock %}
+{% block js %}
+    <script src="{% static "pay/js/mui.min.js" %}"></script>
+    <script src="{% static "pay/js/mui.pullToRefresh.js" %}"></script>
+    <script src="{% static "pay/js/mui.pullToRefresh.material.js" %}"></script>
+    <script src="{% static "pay/js/navigate.js" %}"></script>
+    <script>
+
+
+    function pieChart(title, data, radius, width){
+        this.title = title;
+        this.data = data;
+        this.width = width;
+        this.radius = radius;
+
+        this.add_data = function(){
+            const statistic = document.getElementById("statistic");
+            let width = 2*radius;
+            let chart = document.createElement('div');
+            chart.style.width = "100%";
+            chart.style.marginLeft = "35%";
+            let top = document.createElement('div');
+            top.setAttribute('style','text-align:center;font-weight:bold;width:'+width+'px');
+            top.innerText = title;
+            let circle = document.createElement('canvas');
+            circle.setAttribute('id','circle');
+            circle.setAttribute('width',width+"px");
+            circle.setAttribute('height',width+"px");
+            let list = document.createElement('div');
+            list.setAttribute('id','list');
+            list.style.marginLeft = "25%";
+            let ul = document.createElement('ul');
+            ul.setAttribute('style','font-family:Simsun;margin:0;padding:0;list-style:none;');
+            ul.style.width = "50%";
+            ul.style.textAlign = "center";
+            for(let i=0; i<data.length; i++){
+                let li = document.createElement('li');
+                li.setAttribute('id',data[i].id);
+                li.setAttribute('style','width:'+width+'px;');
+                li.style.color = data[i].color;
+                li.innerHTML = "<span>• </span><span style='color:black;'>"+
+                    data[i].text+
+                    "："+
+                    data[i].num+
+                    "</span>";
+                ul.appendChild(li);
+            }
+            list.appendChild(ul);
+            chart.appendChild(top);
+            chart.appendChild(circle);
+            chart.appendChild(ul);
+            statistic.appendChild(chart);
+        };
+        this.draw = function(){
+            let len = data.length;
+            let id = this.id;
+            for(let i=0; i<len; i++){
+                if(data[i].id === id){
+                    data[i].isdraw = data[i].isdraw? 0:1;
+                    this.style.color = this.style.color === 'gray'? data[i].color:'gray';
+                    let span = this.children[2];
+                    span.style.display = span.style.display==='none'? 'inline':'none';
+                }
+            }
+            let canvas = document.getElementById('circle');
+            if (canvas.getContext) {
+                let ctx = canvas.getContext('2d');
+                let PI = Math.PI;
+                let start = PI*1.5;
+                let gap = 0.01;
+                let pros;
+                let sum = 0;
+                let zero = 0;
+                for(let i=0; i<len; i++){
+                    if(data[i].isdraw === 0){
+                        zero++;
+                        continue;
+                    }
+                    sum+=data[i].num;
+                }
+                if(zero<len-1) {
+                    pros = 100-len+zero;
+                }
+                else{
+                    pros = 100;
+                }
+                ctx.strokeStyle = 'white';
+                for(let i=0; i<len; i++) {
+                    let num = data[i].num;
+                    if(data[i].isdraw === 0){
+                        continue;
+                    }
+                    let a_color= data[i].color;
+                    let end = start+2*PI*pros/100*num/sum;
+                    ctx.beginPath();
+                    ctx.moveTo(radius, radius);
+                    ctx.arc(radius, radius, radius, start, end, false);
+                    ctx.stroke();
+                    start = end + 2 * PI * gap;
+                    ctx.fillStyle = a_color;
+                    ctx.fill();
+                }
+                ctx.beginPath();
+                ctx.arc(radius, radius, radius-width, 0, PI * 2, false);
+                ctx.stroke();
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                ctx.fillStyle = 'black';
+                ctx.font = (radius/5)+'px Simsun';
+                ctx.fillText('总计',(canvas.width - ctx.measureText('总计').width)/2,canvas.height/2-radius/10);
+                ctx.fillText(sum, (canvas.width - ctx.measureText(sum).width)/2,canvas.height/2+radius/10);
+            }
+        };
+    }
+    window.onload = function(){
+        let data1 = [
+            {"id":"{{ wall.num }}","text":"{{ wall.name }}","num":{{ wall.money }},"color":"#1e90ff","isdraw":1},
+            {"id":"{{ eall.num }}","text":"{{ eall.name }}","num":{{ eall.money }},"color":"#cb0d0a","isdraw":1},
+            {"id":"{{ pall.num }}","text":"{{ pall.name }}","num":{{ pall.money }},"color":"#2fc25b","isdraw":1},
+        ];
+        let apie = new pieChart('费用总计',data1,150,40);
+        apie.add_data();
+        apie.draw();
+    };
+    </script>
+{% endblock %}
